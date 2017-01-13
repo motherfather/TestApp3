@@ -1,5 +1,7 @@
 package app.test.testapp3;
 
+import static android.R.id.list;
+
 /**
  * Created by BIT on 2017-01-12.
  */
@@ -15,15 +17,15 @@ public abstract class JSONTest<T> {
 //    private int before_block;
 //    private int begin_block;
 //    private String kwd;kwd
-    private T list;
+    private T data;
 
     public JSONTest() {
     }
 
-    public JSONTest(String result, String message, T list) {
+    public JSONTest(String result, String message, T data) {
         this.result = result;
         this.message = message;
-        this.list = list;
+        this.data = data;
     }
 
     public String getResult() {
@@ -42,12 +44,12 @@ public abstract class JSONTest<T> {
         this.message = message;
     }
 
-    public T getList() {
-        return list;
+    public T getData() {
+        return data;
     }
 
-    public void setList(T list) {
-        this.list = list;
+    public void setData(T data) {
+        this.data = data;
     }
 
     @Override
