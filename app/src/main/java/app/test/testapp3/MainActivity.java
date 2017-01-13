@@ -12,9 +12,6 @@ import com.github.kevinsawicki.http.HttpRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -32,11 +29,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textView = (TextView)findViewById(R.id.textView);
-        editText = (EditText)findViewById(R.id.editText);
-        editText2 = (EditText)findViewById(R.id.editText2);
-        editText3 = (EditText)findViewById(R.id.editText3);
+        textView = (TextView) findViewById(R.id.textView);
+
+        editText = (EditText) findViewById(R.id.editText);
+        editText2 = (EditText) findViewById(R.id.editText2);
+        editText3 = (EditText) findViewById(R.id.editText3);
+
         button = (Button) findViewById(R.id.button);
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     private class JSONTest2 extends JSONTest<List<ShopVo>> {
     }
 
@@ -51,27 +52,35 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public List<ShopVo> call() throws Exception {
-            Gson gson = new GsonBuilder().create();
 
-            HttpRequest httpRequest = HttpRequest.post("http://192.168.1.15:8088/modeal/shop/test"); // post와 get 차이 궁금!!!
+            Gson gson = new GsonBuilder().create(); // gson 선언
 
-            httpRequest.accept(HttpRequest.CONTENT_TYPE_JSON);
-            Reader reader = httpRequest.bufferedReader();
+//            HttpRequest httpRequest = HttpRequest.get("http://192.168.1.15:8088/modeal/shop/test", true, "page", 3); // get 방식
+            HttpRequest httpRequest = HttpRequest.post("http://192.168.1.15:8088/modeal/shop/test"); // post 방식
 
-            JSONTest2 str = gson.fromJson(reader, JSONTest2.class);
-
-            /* ---------------------------------------------------------- */
-
-            httpRequest.contentType(HttpRequest.CONTENT_TYPE_JSON);
-            Writer writer = httpRequest.writer();
+            httpRequest.accept(HttpRequest.CONTENT_TYPE_JSON); // 받아 오는 데이터 타입 설정
+            httpRequest.contentType(HttpRequest.CONTENT_TYPE_FORM); // 넘겨 주는 데이터 타입 설정
 
             Page page = new Page();
             page.setPage(Integer.parseInt(editText.getText().toString()));
             page.setKeyword(editText2.getText().toString());
-            page.setOption(Integer.parseInt(editText3.getText().toString()));
+            page.setFilterCheck(Integer.parseInt(editText3.getText().toString()));
 
             String json2 = gson.toJson(page);
 
+//            httpRequest.send(json2); // post 방식
+
+            httpRequest.send("page=" + page.getPage());
+
+
+//            Reader와 비슷하지만 살짝 다름
+//            code(), ok()와 같은 메소드들은 첫 요청 이후 여러 번 재 호출해도 되지만
+//            body() 메 소드는 한 번 호출 이후 재호출을 할 경우 IOException이 발생합니다.
+//            String body = httpRequest.body();
+
+            Reader reader = httpRequest.bufferedReader(); // url에서 데이터 가져오기
+            JSONTest2 str = gson.fromJson(reader, JSONTest2.class); // 받아온 json 데이터 객체로 변경
+            Log.d("!!", str.toString());
             return str.getList();
         }
 
@@ -85,63 +94,9 @@ public class MainActivity extends AppCompatActivity {
             List<ShopVo> list = new ArrayList<ShopVo>(shopVos);
             String st = "";
             for (ShopVo shopVo : list) {
-                st += shopVo.getName().toString() + '\n';
+                st += shopVo.getNo().toString() + '\n';
                 ((TextView) MainActivity.textView).setText(st);
             }
-        }
-
-        /*
-                @Override
-                protected void onException(Exception e) throws RuntimeException {
-                    // super.onException(e);
-                    throw new RuntimeException(e);
-                }
-
-        @Override
-        protected void onSuccess(List<ShopVo> list) throws Exception {
-            JSONArray json = new JSONArray(list);
-            Log.d("두근", json.toString());
-            ((TextView) MainActivity.textView).setText(json.toString());
-        }
-        */
-    }
-
-    public class Page {
-        private int page;
-        private String keyword;
-        private int option;
-
-        public int getPage() {
-            return page;
-        }
-
-        public void setPage(int page) {
-            this.page = page;
-        }
-
-        public String getKeyword() {
-            return keyword;
-        }
-
-        public void setKeyword(String keyword) {
-            this.keyword = keyword;
-        }
-
-        public int getOption() {
-            return option;
-        }
-
-        public void setOption(int option) {
-            this.option = option;
-        }
-
-        @Override
-        public String toString() {
-            return "Page{" +
-                    "page=" + page +
-                    ", keyword='" + keyword + '\'' +
-                    ", option=" + option +
-                    '}';
         }
     }
 }
