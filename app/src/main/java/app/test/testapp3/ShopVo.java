@@ -10,10 +10,29 @@ public class ShopVo {
 	private String phone;
 	private String picture;
 	private String introduce;
-	private List<CommentVo> comment; // resultMap을 쓰기 위해서 commentvo를 객체로...
-	private List<UserVo> users; // resultMap을 쓰기 위해서 uservo를 객체로...
+//	private List<CommentVo> comment; // resultMap을 쓰기 위해서 commentvo를 객체로...
+//	private List<UserVo> users; // resultMap을 쓰기 위해서 uservo를 객체로...
 	private Double longitude;
 	private Double latitude;
+
+//	private Double grade;
+	private Long rn;
+
+//	public Double getGrade() {
+//		return grade;
+//	}
+
+//	public void setGrade(Double grade) {
+//		this.grade = grade;
+//	}
+
+	public Long getRn() {
+		return rn;
+	}
+
+	public void setRn(Long rn) {
+		this.rn = rn;
+	}
 
 	public Long getNo() {
 		return no;
@@ -71,22 +90,6 @@ public class ShopVo {
 		this.introduce = introduce;
 	}
 
-	public List<CommentVo> getComment() {
-		return comment;
-	}
-
-	public void setComment(List<CommentVo> comment) {
-		this.comment = comment;
-	}
-
-	public List<UserVo> getUsers() {
-		return users;
-	}
-
-	public void setUsers(List<UserVo> users) {
-		this.users = users;
-	}
-
 	public Double getLongitude() {
 		return longitude;
 	}
@@ -105,8 +108,18 @@ public class ShopVo {
 
 	@Override
 	public String toString() {
-		return "ShopVo [no=" + no + ", address=" + address + ", newAddress=" + newAddress + ", name=" + name
-				+ ", phone=" + phone + ", picture=" + picture + ", introduce=" + introduce + ", comment=" + comment
-				+ ", users=" + users + ", longitude=" + longitude + ", latitude=" + latitude + "]";
+		return "ShopVo{" +
+				"no=" + no +
+				", address='" + address + '\'' +
+				", newAddress='" + newAddress + '\'' +
+				", name='" + name + '\'' +
+				", phone='" + phone + '\'' +
+				", picture='" + picture + '\'' +
+				", introduce='" + introduce + '\'' +
+				", longitude=" + longitude +
+				", latitude=" + latitude +
+//				", grade=" + grade +
+				", rn=" + rn +
+				'}';
 	}
 }

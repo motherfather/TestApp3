@@ -2,6 +2,7 @@ package app.test.testapp3;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +14,7 @@ import com.google.gson.GsonBuilder;
 
 import java.io.Reader;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     static Button button;
@@ -42,20 +44,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private class JSONTest2 extends JSONTest<List<ShopVo>> {
-    }
-    private class JSONTest3 extends JSONTest<Page> {
+    private class JSONTest2 extends JSONTest<Map<String, List<ShopVo>>> { // 서버에서 읽어온 data의 타입을 JSONTest<?> ?에 적는다
     }
 
-    private class FetchAsync extends SafeAsyncTask<List<ShopVo>> {
+    private class FetchAsync extends SafeAsyncTask<List<ShopVo>> { // SafeAsyncTask<?> ?에는 onSuccuss(...) 파라미터로 받아올 타입을 적는다
 
         @Override
         public List<ShopVo> call() throws Exception {
 
             Gson gson = new GsonBuilder().create(); // gson 선언
-
+//            자신의 IP적기
 //            HttpRequest httpRequest = HttpRequest.get("http://192.168.1.15:8088/modeal/shop/test", true, "page", 3); // get 방식
-            HttpRequest httpRequest = HttpRequest.post("http://192.168.1.13:8088/modeal/shop/test"); // post 방식
+            HttpRequest httpRequest = HttpRequest.post("http://192.168.0.17:8088/modeal/shop/test"); // post 방식
 
             httpRequest.accept(HttpRequest.CONTENT_TYPE_JSON); // 받아 오는 데이터 타입 설정
             httpRequest.contentType(HttpRequest.CONTENT_TYPE_JSON); // 넘겨 주는 데이터 타입 설정
@@ -79,7 +79,8 @@ public class MainActivity extends AppCompatActivity {
 
             Reader reader = httpRequest.bufferedReader(); // url에서 데이터 가져오기
             JSONTest2 str = gson.fromJson(reader, JSONTest2.class); // 받아온 json 데이터 객체로 변경
-            return str.getData();
+            Log.d("-----", str.toString());
+            return str.getData().get("list");
         }
 
         @Override
@@ -89,12 +90,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onSuccess(List<ShopVo> shopVos) throws Exception {
-//            List<ShopVo> list = new ArrayList<ShopVo>(shopVos);
-            String st = "";
+            Log.e("-------", "유후");
+            String list = "";
             for (ShopVo shopVo : shopVos) {
-                st += shopVo.getNo().toString() + '\n';
-                ((TextView) MainActivity.textView).setText(st);
+                list += shopVo.getNo() + '\n';
             }
+            Log.i("------", list);
         }
     }
 
